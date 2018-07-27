@@ -1,0 +1,9 @@
+environs==2.1.1
+Flask-Script==2.0.6
+Flask==1.0.2
+Flask-Caching==1.4.0
+jmespath==0.9.3
+jsonschema==2.6.0
+protobuf==3.6.0
+six==1.11.0
+sqlacodegen==1.1.6
