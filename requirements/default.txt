@@ -1,11 +1,12 @@
 environs==2.1.1
 Flask-Caching==1.4.0
 Flask-Script==2.0.6
+Flask-SQLAlchemy==2.3.1
 Flask==1.0.2
 jmespath==0.9.3
 jsonschema==2.6.0
+MySQL-python==1.2.5
 protobuf==3.6.0
 requests==2.19.1
 six==1.11.0
 slackclient==1.2.1
-sqlacodegen==1.1.6

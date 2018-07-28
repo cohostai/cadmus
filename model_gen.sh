@@ -11,4 +11,4 @@ if [ ! -e "$BASE_DIRECTORY"/"$INIT_FILE" ]; then
     touch "$BASE_DIRECTORY"/"$INIT_FILE"
 fi
 
-sqlacodegen --outfile "$BASE_DIRECTORY"/base.py mysql+pymysql://chocon:JAjHhtzJj3i6yk4w@chocon-cluster-dev.cluster-csiquhqyczzd.ap-northeast-1.rds.amazonaws.com:6303/chocon
+flask-sqlacodegen --outfile "$BASE_DIRECTORY"/entites.py mysql+pymysql://chocon:JAjHhtzJj3i6yk4w@chocon-cluster-dev.cluster-csiquhqyczzd.ap-northeast-1.rds.amazonaws.com:6303/chocon
