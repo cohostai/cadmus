@@ -2,16 +2,19 @@ version: 0.0
 os: linux
 files:
   - source: chocon
-    destination: /projects/chocon/
+    destination: /projects/chocon/chocon/
   - source: scripts
-    destination: /projects/chocon/
+    destination: /projects/chocon/scripts/
+permissions:
+  - owner: ec2-user
+    group: ec2-user
 hooks:
   BeforeInstall:
     - location: scripts/prepare_env.sh
   AfterInstall:
     - location: scripts/install_requirements.sh
-    - location: scripts/modelgen.sh
-    - location: scripts/protogen.sh
+#    - location: scripts/modelgen.sh
+#    - location: scripts/protogen.sh
 #      timeout: 180
   ApplicationStart:
     - location: scripts/start_server.sh
