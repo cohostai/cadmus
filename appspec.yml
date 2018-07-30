@@ -9,14 +9,13 @@ files:
     destination: /projects/chocon/requirements/
 hooks:
   BeforeInstall:
-    - location: scripts/prepare_env.sh
+    - location: scripts/codedeploy/before_install.sh
   AfterInstall:
-    - location: scripts/install_requirements.sh
-#    - location: scripts/modelgen.sh
-#    - location: scripts/protogen.sh
-#      timeout: 180
+    - location: scripts/codedeploy/after_install.sh
   ApplicationStart:
-    - location: scripts/start_server.sh
+    - location: scripts/codedeploy/start_server.sh
+      timeout: 3600
+    - location: scripts/codedeploy/start_slack_rtm.sh
       timeout: 3600
 #  ValidateService:
 #    - location: Scripts/MonitorService.sh
