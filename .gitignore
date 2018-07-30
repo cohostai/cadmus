@@ -103,6 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 **/protogen/
-*_pb2.py
+# *_pb2.py
 
 .idea/

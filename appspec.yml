@@ -1,0 +1,24 @@
+version: 0.0
+os: linux
+files:
+  - source: chocon
+    destination: /projects/chocon/chocon/
+  - source: scripts
+    destination: /projects/chocon/scripts/
+  - source: requirements
+    destination: /projects/chocon/requirements/
+hooks:
+  BeforeInstall:
+    - location: scripts/prepare_env.sh
+  AfterInstall:
+    - location: scripts/install_requirements.sh
+#    - location: scripts/modelgen.sh
+#    - location: scripts/protogen.sh
+#      timeout: 180
+  ApplicationStart:
+    - location: scripts/start_server.sh
+      timeout: 3600
+#  ValidateService:
+#    - location: Scripts/MonitorService.sh
+#      timeout: 3600
+#      runas: codedeployuser
