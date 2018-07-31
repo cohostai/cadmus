@@ -15,6 +15,7 @@ permissions:
     group: ec2-user
     type:
       - directory
+      - file
 hooks:
   BeforeInstall:
     - location: scripts/codedeploy/before_install.sh
