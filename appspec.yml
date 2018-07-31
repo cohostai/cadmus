@@ -13,7 +13,10 @@ hooks:
   BeforeInstall:
     - location: scripts/codedeploy/before_install.sh
   AfterInstall:
+    - location: scripts/codedeploy/setup_permissions.sh
     - location: scripts/codedeploy/after_install.sh
+      timeout: 3600
+      runas: ec2-user
   ApplicationStart:
     - location: scripts/codedeploy/start_server.sh
       timeout: 3600
