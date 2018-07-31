@@ -17,17 +17,17 @@ hooks:
   ApplicationStart:
     - location: scripts/codedeploy/start_server.sh
       timeout: 3600
-      runas: ec2-user
+#      runas: ec2-user
     - location: scripts/codedeploy/start_slack_rtm.sh
       timeout: 3600
-      runas: ec2-user
+#      runas: ec2-user
   ApplicationStop:
     - location: scripts/codedeploy/stop_server.sh
       timeout: 3600
-      runas: ec2-user
+#      runas: ec2-user
     - location: scripts/codedeploy/stop_slack_rtm.sh
       timeout: 3600
-      runas: ec2-user
+#      runas: ec2-user
 #  ValidateService:
 #    - location: Scripts/MonitorService.sh
 #      timeout: 3600
