@@ -14,6 +14,11 @@ permissions:
     owner: ec2-user
     group: ec2-user
     type:
+      - file
+  - object: /projects/chocon
+    owner: ec2-user
+    group: ec2-user
+    type:
       - directory
 hooks:
   BeforeInstall:
