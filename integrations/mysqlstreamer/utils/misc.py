@@ -12,3 +12,8 @@ from time import time
 
 def miliseconds():
     return int(time() * 1000)
+
+
+def seconds():
+    return int(time())
+

@@ -5,18 +5,17 @@ main
 
 Copyright (c) 2018 __CGD Inc__. All rights reserved.
 """
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
-import time
-import sys
 from Queue import Queue
 
 from integrations.mysqlstreamer.utils.thread.coordinator import Coordinator
-from .committers import LazyCheckpointCommitter
-from .committers.savers import DynamoCheckpointSaver
-from .outputs import KinesisStreamOutput
-from .reader import DataChangesBinlogReader
 
+from .committers import LazyCheckpointCommitter
+from .committers.savers import KafkaCheckpointSaver
+from .outputs import KafkaEventOutput
+from .reader import DataChangesBinlogReader
 from .utils import log
 
 logger = log.get_logger(__name__)
@@ -57,23 +56,22 @@ class App(object):
         self.outputer.start()
         self.committer.start()
 
-        self.outputer.join()
-        self.committer.join()
-        self.binlog_reader.join()
-
     def stop(self):
         self.coordinator.stop()
+        self.outputer.join()
+        self.committer.join()
+
+    def should_stop(self):
+        return self.coordinator.should_stop()
 
     def setup_outputer(self):
-        kinesis_config = {
-            'stream_name': self.config.KINESIS_STREAM_NAME,
-            'region_name': self.config.KINESIS_REGION_NAME,
-        }
-        self.outputer = KinesisStreamOutput(
+
+        self.outputer = KafkaEventOutput(
             self.coordinator,
             self.pending_queue,
             self.commit_queue,
-            kinesis_config=kinesis_config
+            bootstrap_servers=self.config.KAFKA_BOOTSTRAP_SERVERS,
+            topic=self.config.KAFKA_EVENT_TOPIC
         )
 
     def setup_binlog_reader(self):
@@ -84,7 +82,7 @@ class App(object):
             "passwd": self.config.MYSQL_PASSWD
         }
 
-        last_checkpoint = self.committer.last_commit_checkpoint
+        last_checkpoint = self.committer.last_checkpoint
 
         self.binlog_reader = DataChangesBinlogReader(
             self.coordinator,
@@ -96,9 +94,9 @@ class App(object):
         )
 
     def setup_checkpoint_committer(self):
-        checkpoint_saver = DynamoCheckpointSaver(
-            self.config.DYNAMO_CHECKPOINT_TABLE,
-            self.config.DYNAMO_REGION_NAME
+        checkpoint_saver = KafkaCheckpointSaver(
+            self.config.KAFKA_BOOTSTRAP_SERVERS,
+            self.config.KAFKA_COMMIT_TOPIC,
         )
 
         self.committer = LazyCheckpointCommitter(

@@ -24,20 +24,18 @@ class KinesisStreamOutput(EventOutput):
                  kinesis_config):
         super(KinesisStreamOutput, self).__init__(coordinator, pending_queue)
 
-        self.commit_queue = commit_queue
-        self.kinesis_region_name = kinesis_config['region_name']
-        self.kinesis_stream_name = kinesis_config['stream_name']
-        self.kinesis = boto3.client(
+        self._commit_queue = commit_queue
+        self._region_name = kinesis_config['region_name']
+        self._stream_name = kinesis_config['stream_name']
+        self._kinesis = boto3.client(
             'kinesis',
-            region_name=self.kinesis_region_name
+            region_name=self._region_name
         )
 
-    def _output(self, envelope):
-        events, checkpoint = envelope
-
+    def _output(self, events, checkpoint):
         for event in events:
-            self.kinesis.put_record(
-                StreamName=self.kinesis_stream_name,
+            self._kinesis.put_record(
+                StreamName=self._stream_name,
                 Data=self._event_to_data(event),
                 PartitionKey='default',
                 SequenceNumberForOrdering=str(event['timestamp'])
@@ -46,7 +44,7 @@ class KinesisStreamOutput(EventOutput):
         self._save_checkpoint(checkpoint)
 
     def _save_checkpoint(self, checkpoint):
-        self.commit_queue.put(checkpoint)
+        self._commit_queue.put(checkpoint)
 
     @staticmethod
     def _event_to_data(event):  # TODO (thuync): support many types of serializing

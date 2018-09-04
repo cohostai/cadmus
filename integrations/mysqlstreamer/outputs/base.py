@@ -31,14 +31,15 @@ class EventOutput(CoordinatedThread):
     def run(self):
         while not self.should_stop():
             try:
-                envelope = self._pending_queue.get(timeout=5)
-                self._output(envelope)
+                events, checkpoint = self._pending_queue.get(timeout=5)
+                self._output(checkpoint, events)
             except Empty:
-                logger.warn('No event to output. Should stop: %s', self.should_stop())
+                logger.debug('No event to output. Should stop: %s', self.should_stop())
                 continue
             except:
                 logger.error("Cant output event. Stopping shortly...", exc_info=True)
                 self.stop()
 
-    def _output(self, events):
+    def _output(self, checkpoint, events):
         raise NotImplementedError
+

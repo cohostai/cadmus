@@ -37,8 +37,12 @@ class CheckpointCommitter(CoordinatedThread):
         return self._saver.last_commit_time
 
     @property
-    def last_commit_checkpoint(self):
-        return self._saver.last_commit_checkpoint
+    def last_commit_time_in_seconds(self):
+        return self._saver.last_commit_time_in_seconds
+
+    @property
+    def last_checkpoint(self):
+        return self._saver.last_checkpoint
 
     def run(self):
         self._commit_checkpoint()
@@ -94,7 +98,7 @@ class LazyCheckpointCommitter(CheckpointCommitter):
                 checkpoint = self._commit_queue.get(timeout=wait_timeout)
                 self._pending_checkpoints += 1
             except Empty:
-                logger.warn('No checkpoint to commit. Should stop: %s', self.should_stop())
+                logger.debug('No checkpoint to commit. Should stop: %s', self.should_stop())
 
             if self._should_save_checkpoint() and checkpoint:
                 self._save_checkpoint(checkpoint)
@@ -102,10 +106,11 @@ class LazyCheckpointCommitter(CheckpointCommitter):
                 checkpoint = None
 
     def _should_save_checkpoint(self):
-        current_time = time()
+        current_time_in_seconds = time()
+
         return (
-            self.last_commit_checkpoint is None or
+            self.last_checkpoint is None or
             self.last_commit_time is None or
             self._pending_checkpoints > self._max_pending_checkpoints or
-            (current_time - self.last_commit_time) > self._commit_interval
+            (current_time_in_seconds - self.last_commit_time_in_seconds) > self._commit_interval
         )

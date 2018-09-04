@@ -31,18 +31,20 @@ class DynamoCheckpointSaver(CheckpointSaver):
         if "Item" in result:
             item = result["Item"]
             self.last_commit_time = item["commit_time"]
-            self.last_commit_checkpoint = BinlogCheckpoint(
+            self.last_checkpoint = BinlogCheckpoint(
                 **item["checkpoint"]
             )
 
     def save(self, checkpoint):
+        super(DynamoCheckpointSaver, self).save(checkpoint)
+
         item = {
-            "commit_time": miliseconds(),
+            "commit_time": self.last_commit_time,
             "checkpoint": {
-                "log_file": checkpoint.log_file,
-                "log_pos": checkpoint.log_pos,
-                "schema": checkpoint.schema,
-                "table": checkpoint.table,
+                "log_file": self.last_checkpoint.log_file,
+                "log_pos": self.last_checkpoint.log_pos,
+                "schema": self.last_checkpoint.schema,
+                "table": self.last_checkpoint.table,
             },
             "key": "binlog-checkpoint"
         }

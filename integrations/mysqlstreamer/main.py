@@ -9,8 +9,10 @@ from __future__ import absolute_import, unicode_literals
 
 import signal
 import time
-import sys
+import subprocess
 import os
+
+from six import text_type
 
 from integrations.mysqlstreamer import config
 from integrations.mysqlstreamer.app import App
@@ -22,12 +24,20 @@ app = App(config)
 
 
 def terminate(signum, stack):
+    logger.info('App is terminating...')
     app.stop()
+    subprocess.call(['kill',  '-15', text_type(os.getpid())])
 
-signal.signal(signal.SIGTERM, terminate)
+
+def wait_for_termination():
+    while not app.should_stop():
+        time.sleep(5)
+
+
 signal.signal(signal.SIGINT, terminate)
 
 
 if __name__ == '__main__':
     app.start()
+    wait_for_termination()
     logger.info('Stopped. See ya again.')
