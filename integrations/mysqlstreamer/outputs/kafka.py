@@ -35,6 +35,7 @@ class KafkaEventOutput(EventOutput):
         self._bootstrap_servers = bootstrap_servers
         self._topic = topic
 
+        # TODO(thuync): Read more about producer params
         self._producer = KafkaProducer(
             bootstrap_servers=self._bootstrap_servers,
             max_in_flight_requests_per_connection=1,

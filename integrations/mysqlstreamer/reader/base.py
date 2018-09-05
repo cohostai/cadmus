@@ -100,6 +100,7 @@ class QueuedBinlogReader(BinlogReader):
         Returns:
 
         """
+
         events = self._event_converter.convert(
             binlogevent,
             slave_uuid=self._stream.slave_uuid
@@ -127,3 +128,4 @@ class EventConverter(object):
 
     def convert(self, binlogevent, **kwargs):
         raise NotImplementedError
+
