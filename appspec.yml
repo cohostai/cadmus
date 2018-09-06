@@ -7,6 +7,8 @@ files:
     destination: /projects/chocon/scripts/
   - source: requirements
     destination: /projects/chocon/requirements/
+  - source: integrations
+    destination: /projects/chocon/integrations/
   - source: manage.py
     destination: /projects/chocon/
 permissions:
