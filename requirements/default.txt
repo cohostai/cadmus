@@ -10,6 +10,7 @@ gunicorn==19.9.0
 humanize==0.5.1
 jmespath==0.9.3
 jsonschema==2.6.0
+kafka-python==1.4.3
 lxml==4.2.4
 MySQL-python==1.2.5
 protobuf==3.6.0
