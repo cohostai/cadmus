@@ -49,7 +49,7 @@ def get_es_client():
         config.ELASTICSEARCH_REGION,
         'es'
     )
-    
+
     return Elasticsearch(
         hosts=[config.ELASTICSEARCH_HOST],
         http_auth=awsauth,
