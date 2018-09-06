@@ -12,6 +12,8 @@ KAFKA_BOOTSTRAP_SERVERS = ['13.112.90.56:9290']
 KAFKA_CONSUMER_GROUP = 'indexer-group'
 KAFKA_EVENT_TOPIC = 'mysqlstreamer_events'
 
-ELASTICSEARCH_HOSTS = 'localhost:9200'
+ELASTICSEARCH_HOST = 'https://search-chocon-5eu4oxukp4dzbtq66yn2gplpda.ap-northeast-1.es.amazonaws.com'
+ELASTICSEARCH_REGION = 'ap-northeast-1'
+
 
 BATCH_SIZE = 0

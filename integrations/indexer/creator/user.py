@@ -21,7 +21,60 @@ INDEX_SETTINGS = {
 INDEX_MAPPINGS = {
     "_doc": {
         "properties": {
-
+            "id": {
+                "type": "integer"
+            },
+            "first_name": {
+                "type": "text"
+            },
+            "last_name": {
+                "type": "text"
+            },
+            "about": {
+                "type": "text"
+            },
+            "email": {
+                "type": "keyword",
+            },
+            "phone": {
+                "type": "keyword",
+            },
+            "country_code": {
+                "type": "keyword",
+            },
+            "location_geopoint": {
+                "type": "geo_point"
+            },
+            "created_at": {
+                "type": "date"
+            },
+            "modified_at": {
+                "type": "date"
+            },
+            "deleted_at": {
+                "type": "date"
+            },
+            "status": {
+                "type": "keyword"
+            },
+            "score": {
+                "type": "integer"
+            },
+            "identity_verified": {
+                "type": "boolean"
+            },
+            "role": {
+                "type": "keyword",
+            },
+            "languages": {
+                "type": "text"
+            },
+            "slack_thread_id": {
+                "type": "keyword"
+            },
+            "avatar": {
+                "type": "keyword",
+            }
         }
     }
 }

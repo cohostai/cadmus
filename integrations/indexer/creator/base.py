@@ -50,22 +50,23 @@ class IndexCreator(BaseIndexCreator):
         return self._create()
 
     def _maybe_update_mappings(self):
-        mappings = self._client.indices.get_mapping(
+        # mappings = self._client.indices.get_mapping(
+        #     index=self._index_name,
+        #     doc_type='_doc',
+        # )
+        #
+        # mappings = mappings[self._index_name]['mappings']['_doc']
+        #
+        # logger.warn('MAPPINGS: %s', mappings)
+        # logger.warn('MAPPINGS: %s', self._mappings['_doc'])
+        #
+        # if mappings != self._mappings:
+
+        result = self._client.indices.put_mapping(
             index=self._index_name,
             doc_type='_doc',
+            body=self._mappings['_doc']
         )
-
-        mappings = mappings[self._index_name]['mappings']['_doc']
-
-        logger.warn('MAPPINGS: %s', mappings)
-        logger.warn('MAPPINGS: %s', self._mappings['_doc'])
-
-        if mappings != self._mappings:
-            result = self._client.indices.put_mapping(
-                index=self._index_name,
-                doc_type='_doc',
-                body=self._mappings['_doc']
-            )
 
     def _create(self):
         body = self._get_body()

@@ -8,7 +8,10 @@ Copyright (c) 2018 __CGD Inc__. All rights reserved.
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import boto3
 from elasticsearch import Elasticsearch
+from elasticsearch import RequestsHttpConnection
+from requests_aws4auth import AWS4Auth
 from kafka import KafkaConsumer
 
 from integrations.indexer import config
@@ -39,7 +42,21 @@ def get_stream():
 
 
 def get_es_client():
-    return Elasticsearch(config.ELASTICSEARCH_HOSTS)
+    credentials = boto3.Session().get_credentials()
+    awsauth = AWS4Auth(
+        credentials.access_key,
+        credentials.secret_key,
+        config.ELASTICSEARCH_REGION,
+        'es'
+    )
+    
+    return Elasticsearch(
+        hosts=[config.ELASTICSEARCH_HOST],
+        http_auth=awsauth,
+        use_ssl=True,
+        verify_certs=True,
+        connection_class=RequestsHttpConnection
+    )
 
 
 def get_index_creator(es_client):
