@@ -3,8 +3,8 @@
 
 import logging
 
-from .utils import detect_ota
-from .utils import OTA
+from .utils.email import detect_ota
+from .utils.email import OTA
 
 from .airbnb import AIRBNB_EMAIL_PARSER
 from .booking import BOOKING_EMAIL_PARSER
