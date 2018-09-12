@@ -34,4 +34,8 @@ class EmailParser(object):
         if not data:
             raise DontParseEmailOTAError("Not parse email from ota: %s" % ota)
 
+        data['email_id'] = sendgrid_data['email_id']
         return data
+
+
+email_parser = EmailParser()
