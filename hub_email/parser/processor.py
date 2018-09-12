@@ -16,18 +16,16 @@ from email.parser import HeaderParser
 
 import requests
 
-from chocon.utils import date as date_utils
-from chocon.utils.regex import extract_from_regex
-
 from .airbnb.constants import SUBJECT_EMAILS_INSTANT_BOOK
 from .airbnb.utils import AirbnbUserType
-from .airbnb.utils import get_picture_url_id
 from .airbnb.utils import get_primary_host_for_listing
-from .utils import get_guest_first_name
-from .utils import get_in_reply_to
-from .utils import get_references
-from .utils import get_reply_to_address
-from .utils import parse_checkin_checkout
+from .utils import date as date_utils
+from .utils.email import get_guest_first_name
+from .utils.email import get_in_reply_to
+from .utils.email import get_references
+from .utils.email import get_reply_to_address
+from .utils.email import parse_checkin_checkout
+from .utils.regex import extract_from_regex
 
 logger = logging.getLogger(__name__)
 

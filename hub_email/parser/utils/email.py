@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-utils
+email
 
 Copyright (c) 2018 __CGD Inc__. All rights reserved.
 """
@@ -12,7 +12,7 @@ import base64
 import re
 from email.parser import HeaderParser
 
-from chocon.utils.regex import extract_from_regex
+from .regex import extract_from_regex
 
 
 class OTA(object):
