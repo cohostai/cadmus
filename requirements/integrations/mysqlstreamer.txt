@@ -1,3 +1,0 @@
-kafka-python==1.4.3
-mysql-replication==0.18
-PyMySQL==0.9.2
