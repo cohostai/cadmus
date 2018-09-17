@@ -8,4 +8,4 @@ COPY luckyluke /app/luckyluke/
 
 WORKDIR /app
 
-ENTRYPOINT ["python", "manage.py", "listen_slack_rtm"]
+ENTRYPOINT ["python", "luckyluke/slack_rtm/rtm.py "]
