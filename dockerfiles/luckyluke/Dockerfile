@@ -14,6 +14,8 @@ RUN apk --no-cache add --virtual build-dependencies \
     && rm -rf ~/.cache/pip \
     && apk del build-dependencies
 
+RUN apk --no-cache add libxslt-dev
+
 COPY requirements.txt /tmp/
 
 RUN pip install -r /tmp/requirements.txt \
@@ -23,4 +25,6 @@ COPY luckyluke /app/luckyluke/
 
 WORKDIR /app
 
-ENTRYPOINT ["python", "-m", "luckyluke"]
+ENV PYTHONPATH=.
+
+ENTRYPOINT ["python", "luckyluke/main.py"]
