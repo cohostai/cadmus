@@ -1,0 +1,5 @@
+boto3==1.7.67
+Flask==1.0.2
+gunicorn==19.9.0
+python-jose==3.0.0
+requests==2.19.1

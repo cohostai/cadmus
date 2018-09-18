@@ -1,0 +1,29 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_ACCOUNT_ID: 739880170646
+    IMAGE_REPO_NAME: apollo
+    CONTAINER_NAME: apollo
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - IMAGE_TAG=latest
+      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - docker pull $REPOSITORY_URI:$IMAGE_TAG || true
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image $IMAGE_REPO_NAME:$IMAGE_TAG...
+      - docker build --cache-from $REPOSITORY_URI:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image $IMAGE_REPO_NAME:$IMAGE_TAG...
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$REPOSITORY_URI:$IMAGE_TAG" > images.json
+artifacts:
+  files: images.json
