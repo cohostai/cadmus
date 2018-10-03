@@ -88,7 +88,7 @@ class LocalParametersStore(ParametersStore):
         return os.environ
 
 
-if os.getenv('PLATFORM') == 'cloud':
+if os.getenv('PLATFORM', '').lower() == 'cloud':
     params_store = AWSParametersStore()
 else:
     params_store = LocalParametersStore()
