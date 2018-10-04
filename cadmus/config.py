@@ -15,6 +15,6 @@ params = params_store.get_params()
 
 
 class AppConfig(object):
-    SECRET_KEY = params['FLASK_SECRET_KEY']
-    S3_BUCKET = params['UPLOAD_S3_BUCKET']
-    MAX_CONTENT_LENGTH = to_int(params['UPLOAD_MAX_CONTENT_LENGTH'])
+    SECRET_KEY = params['SECRET_KEY']
+    S3_BUCKET = params['S3_BUCKET']
+    MAX_CONTENT_LENGTH = to_int(params['MAX_CONTENT_LENGTH'])
