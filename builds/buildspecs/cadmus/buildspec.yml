@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    AWS_ACCOUNT_ID: 739880170646
+    AWS_ACCOUNT_ID: 643651948098
     IMAGE_REPO_NAME: cadmus
     CONTAINER_NAME: cadmus
 phases:
