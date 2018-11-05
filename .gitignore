@@ -109,3 +109,4 @@ venv.bak/
 
 deploys/
 temp/
+__entities__.py
