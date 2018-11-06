@@ -108,3 +108,5 @@ venv.bak/
 .idea/
 
 deploys/
+temp/
+__entities__.py
