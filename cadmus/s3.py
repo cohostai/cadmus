@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 import uuid
 from os import path
 from urlparse import urljoin
+from functools import partial
 import boto3
 
 from .config import AppConfig
@@ -32,13 +33,19 @@ def get_s3_key(filename, key_prefix):
     return path.join(key_prefix, basename)
 
 
-def upload_fileobj(fileobj, key_prefix='images/', **kwargs):
+def upload_fileobj(fileobj, key_prefix='images/'):
     try:
         key = get_s3_key(fileobj.filename, key_prefix)
+
+        extra_args = {
+            "ContentType": fileobj.content_type
+        }
+
         s3.upload_fileobj(
             fileobj,
             AppConfig.S3_BUCKET,
-            key
+            key,
+            ExtraArgs=extra_args
         )
 
         return urljoin(AppConfig.BASE_URL, key)
