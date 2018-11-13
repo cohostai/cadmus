@@ -10,7 +10,7 @@ from __future__ import unicode_literals
 
 import uuid
 from os import path
-
+from urlparse import urljoin
 import boto3
 
 from .config import AppConfig
@@ -32,22 +32,16 @@ def get_s3_key(filename, key_prefix):
     return path.join(key_prefix, basename)
 
 
-def upload_fileobj(fileobj,
-                   key_prefix='images/',
-                   acl="public-read"):
+def upload_fileobj(fileobj, key_prefix='images/', **kwargs):
     try:
         key = get_s3_key(fileobj.filename, key_prefix)
         s3.upload_fileobj(
             fileobj,
             AppConfig.S3_BUCKET,
-            key,
-            ExtraArgs={
-                "ACL": acl,
-                "ContentType": fileobj.content_type
-            }
+            key
         )
 
-        return 'http://{}.s3.amazonaws.com/{}'.format(AppConfig.S3_BUCKET, key)
+        return urljoin(AppConfig.BASE_URL, key)
     except Exception as e:
         # This is a catch all exception, edit this part to fit your needs.
         raise
