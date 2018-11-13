@@ -18,3 +18,4 @@ class AppConfig(object):
     SECRET_KEY = params['SECRET_KEY']
     S3_BUCKET = params['S3_BUCKET']
     MAX_CONTENT_LENGTH = to_int(params['MAX_CONTENT_LENGTH'])
+    BASE_URL = params['BASE_URL']
