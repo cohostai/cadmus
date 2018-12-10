@@ -11,14 +11,15 @@ phases:
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
-      - CURRENT_VERION=$(aws ecr describe-images --repository-name $IMAGE_REPO_NAME --region $AWS_DEFAULT_REGION --output text --query 'sort_by(imageDetails,& imagePushedAt)[*].imageTags[*]' | tr '\t' '\n' | tr -d v | tail -1)
-      - NEXT_VERSION=$(echo $((CURRENT_VERION + 1)) || echo 1)
-      - docker pull $REPOSITORY_URI:v$CURRENT_VERION || true
+      - CURRENT_VERSION=$(aws ecr describe-images --repository-name $IMAGE_REPO_NAME --region $AWS_DEFAULT_REGION --output text --query 'sort_by(imageDetails,& imagePushedAt)[*].imageTags[*]' | tr '\t' '\n' | tr -d v | tail -1)
+      - CURRENT_VERSION=$(if ! echo $CURRENT_VERSION | egrep -q '^[0-9]+$'; then echo 1; else echo $CURRENT_VERSION; fi)
+      - NEXT_VERSION=$(echo $((CURRENT_VERSION + 1)) || echo 1)
+      - docker pull $REPOSITORY_URI:v$CURRENT_VERSION || true
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image $IMAGE_REPO_NAME:v$CURRENT_VERION...
-      - docker build --cache-from $REPOSITORY_URI:v$CURRENT_VERION -t $IMAGE_REPO_NAME:v$NEXT_VERSION .
+      - echo Building the Docker image $IMAGE_REPO_NAME:v$NEXT_VERSION...
+      - docker build --cache-from $REPOSITORY_URI:v$CURRENT_VERSION -t $IMAGE_REPO_NAME:v$NEXT_VERSION .
       - docker tag $IMAGE_REPO_NAME:v$NEXT_VERSION $REPOSITORY_URI:v$NEXT_VERSION
   post_build:
     commands:
