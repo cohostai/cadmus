@@ -64,7 +64,7 @@ def not_found_user(e):
 
 # TODO: make streaming upload
 # TODO: validate client id
-@app.route('/pictures/user', methods=['POST'])
+@app.route('/upload/user', methods=['POST'])
 # @auth.require_auth
 def upload_user_images():
     if "file" not in request.files:
