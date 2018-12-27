@@ -66,6 +66,12 @@ def not_found_user(e):
 # TODO: validate client id
 @app.route('/upload/user', methods=['POST'])
 # @auth.require_auth
+def upload_old_user_images():
+    return upload_user_images()
+
+
+@app.route('/pictures/user', methods=['POST'])
+# @auth.require_auth
 def upload_user_images():
     if "file" not in request.files:
         return response.no_file_provided()
