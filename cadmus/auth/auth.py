@@ -114,8 +114,8 @@ class Auth(object):
         @wraps(f)
         def decorated(*args, **kwargs):
             payload = self._get_token_payload()
-            user_id = payload.get('user_id') or payload.get('sub')
-            g.user = self._load_user(user_id)
+            # user_id = payload.get('user_id') or payload.get('sub')
+            # g.user = self._load_user(user_id)
 
             return f(*args, **kwargs)
 
