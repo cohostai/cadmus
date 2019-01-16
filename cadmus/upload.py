@@ -73,28 +73,23 @@ def upload_old_user_images():
 @app.route('/pictures/user', methods=['POST'])
 # @auth.require_auth
 def upload_user_images():
-    if "file" not in request.files:
-        return response.no_file_provided()
-
-    fileobj = request.files["file"]
-    if not fileobj.filename:
-        return response.no_file_provided()
-
-    if not allowed_file(fileobj):
-        return response.invalid_file_type()
-
-    fileobj.filename = secure_filename(fileobj.filename)
-    key_prefix = "pictures/user"
-    url = s3.upload_fileobj(fileobj, key_prefix=key_prefix)
-
-    return jsonify({
-        "url": url
-    })
+    return _handle_upload("pictures/user")
 
 
 @app.route('/pictures/message', methods=['POST'])
 @auth.require_auth
 def upload_message_image():
+    return _handle_upload("pictures/message")
+
+
+@app.route('/pictures/team', methods=['POST'])
+@auth.require_auth
+def upload_team_image():
+    return _handle_upload("pictures/team")
+
+
+def _handle_upload(key_prefix):
+
     if "file" not in request.files:
         return response.no_file_provided()
 
@@ -106,7 +101,6 @@ def upload_message_image():
         return response.invalid_file_type()
 
     fileobj.filename = secure_filename(fileobj.filename)
-    key_prefix = "pictures/message"
     url = s3.upload_fileobj(fileobj, key_prefix=key_prefix)
 
     return jsonify({
