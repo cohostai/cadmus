@@ -19,3 +19,8 @@ class AppConfig(object):
     S3_BUCKET = params['S3_BUCKET']
     MAX_CONTENT_LENGTH = to_int(params['MAX_CONTENT_LENGTH'])
     BASE_URL = params['BASE_URL']
+
+    # Auth0 Authentication
+    AUTH0_AUTH_DOMAIN = params['AUTH0_AUTH_DOMAIN']
+    COHOST_API_AUDIENCE = params['COHOST_API_AUDIENCE']
+    COHOST_JWKS_URL = params['COHOST_JWKS_URL']
