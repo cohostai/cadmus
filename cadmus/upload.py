@@ -66,13 +66,13 @@ def not_found_user(e):
 # TODO: validate client id
 @app.route('/upload/user', methods=['POST'])
 # @auth.require_auth
-def upload_old_user_images():
-    return upload_user_images()
+def upload_old_user_image():
+    return upload_user_image()
 
 
 @app.route('/pictures/user', methods=['POST'])
 # @auth.require_auth
-def upload_user_images():
+def upload_user_image():
     return _handle_upload("pictures/user")
 
 
