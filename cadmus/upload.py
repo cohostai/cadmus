@@ -14,6 +14,7 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from jose import JWTError
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
 from . import response
@@ -39,6 +40,9 @@ auth = Auth(
 )
 
 app = Flask(__name__)
+
+CORS(app)
+
 app.config.from_object(AppConfig)
 
 
@@ -86,6 +90,12 @@ def upload_message_image():
 @auth.require_auth
 def upload_team_image():
     return _handle_upload("pictures/team")
+
+
+@app.route('/pictures/listing', methods=['POST'])
+@auth.require_auth
+def upload_listing_image():
+    return _handle_upload("pictures/listing")
 
 
 def _handle_upload(key_prefix):
