@@ -30,7 +30,10 @@ ALLOWED_EXTENSIONS = [
     ".png",
     ".gif",
     ".svg",
-    ".bmp"
+    ".bmp",
+    ".txt",
+    ".pdf",
+    ".doc"
 ]
 
 auth = Auth(
@@ -98,6 +101,12 @@ def upload_listing_image():
     return _handle_upload("pictures/listing")
 
 
+@app.route('/attachments', methods=['POST'])
+@auth.require_auth
+def upload_attachments():
+    return _handle_upload("attachments")
+
+
 def _handle_upload(key_prefix):
 
     if "file" not in request.files:
@@ -114,7 +123,8 @@ def _handle_upload(key_prefix):
     url = s3.upload_fileobj(fileobj, key_prefix=key_prefix)
 
     return jsonify({
-        "url": url
+        "url": url,
+        "mimetype": fileobj.content_type
     })
 
 
