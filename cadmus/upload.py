@@ -101,10 +101,10 @@ def upload_listing_image():
     return _handle_upload("pictures/listing")
 
 
-@app.route('/attachments', methods=['POST'])
+@app.route('/pictures/attachments', methods=['POST'])
 @auth.require_auth
 def upload_attachments():
-    return _handle_upload("attachments")
+    return _handle_upload("pictures/attachments")
 
 
 def _handle_upload(key_prefix):
