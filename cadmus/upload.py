@@ -107,9 +107,9 @@ def upload_image_from_url():
 
     url = s3.upload_fileobj(image_file, key_prefix=key_prefix)
 
-    return {
+    return jsonify({
         'url': url
-    }
+    })
 
 
 @app.route('/pictures/team', methods=['POST'])
