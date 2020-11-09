@@ -25,6 +25,8 @@ from . import s3
 from .auth import Auth
 from .auth import NotFoundError
 from .config import AppConfig
+from .utils import urls
+
 
 ALLOWED_EXTENSIONS = [
     ".jpg",
@@ -96,6 +98,9 @@ def upload_image_from_url():
     resp = requests.get(body['url'])
 
     image_file = BytesIO(resp.content)
+    image_file.filename = urls.file_name(body['url'])
+    image_file.content_type = resp.headers.get('Content-Type')
+
     key_prefix = "pictures/url"
     if request.args.get('type') == 'message':
         key_prefix = "pictures/message"

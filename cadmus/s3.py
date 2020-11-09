@@ -25,10 +25,9 @@ def get_uuid():
 
 def get_s3_key(filename, key_prefix):
     _, extension = path.splitext(filename)
+    basename = get_uuid()
     if extension:
-        basename = get_uuid() + extension
-    else:
-        basename = filename
+        basename = basename + extension
 
     return path.join(key_prefix, basename)
 
