@@ -9,6 +9,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from os import path
+from io import BytesIO
 
 from flask import Flask
 from flask import jsonify
@@ -16,6 +17,8 @@ from flask import request
 from jose import JWTError
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+
+import requests
 
 from . import response
 from . import s3
@@ -84,6 +87,24 @@ def upload_user_image():
 @auth.require_auth
 def upload_message_image():
     return _handle_upload("pictures/message")
+
+
+@app.route('/pictures/url', methods=['POST'])
+@auth.require_auth
+def upload_image_from_url():
+    body = request.get_json(force=True)
+    resp = requests.get(body['url'])
+
+    image_file = BytesIO(resp.content)
+    key_prefix = "pictures/url"
+    if request.args.get('type') == 'message':
+        key_prefix = "pictures/message"
+
+    url = s3.upload_fileobj(image_file, key_prefix=key_prefix)
+
+    return {
+        'url': url
+    }
 
 
 @app.route('/pictures/team', methods=['POST'])
