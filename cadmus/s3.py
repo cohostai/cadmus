@@ -11,7 +11,7 @@ from __future__ import unicode_literals
 import uuid
 from os import path
 from urlparse import urljoin
-from functools import partial
+
 import boto3
 
 from .config import AppConfig
@@ -25,9 +25,10 @@ def get_uuid():
 
 def get_s3_key(filename, key_prefix):
     _, extension = path.splitext(filename)
-    basename = get_uuid()
     if extension:
-        basename = basename + extension
+        basename = get_uuid() + extension
+    else:
+        basename = filename
 
     return path.join(key_prefix, basename)
 

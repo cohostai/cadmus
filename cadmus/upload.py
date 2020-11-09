@@ -41,6 +41,7 @@ ALLOWED_EXTENSIONS = [
     ".doc"
 ]
 
+
 auth = Auth(
     issuer='https://%s/' % AppConfig.AUTH0_AUTH_DOMAIN,
     api_audience=AppConfig.COHOST_API_AUDIENCE,
@@ -57,6 +58,10 @@ app.config.from_object(AppConfig)
 def allowed_file(fileobj):
     name, extension = path.splitext(fileobj.filename)
     return extension and extension.lower() in ALLOWED_EXTENSIONS
+
+
+def allowed_content_type(content_type):
+    return content_type and content_type.lower().startswith("image")
 
 
 @app.errorhandler(413)
@@ -104,6 +109,9 @@ def upload_image_from_url():
     image_file.filename = urls.file_name(body['url'])
     image_file.content_type = resp.headers.get('Content-Type')
 
+    if not allowed_content_type(image_file.content_type):
+        return response.invalid_file_type()
+
     key_prefix = "pictures/url"
     if request.args.get('type') == 'message':
         key_prefix = "pictures/message"
@@ -111,7 +119,8 @@ def upload_image_from_url():
     url = s3.upload_fileobj(image_file, key_prefix=key_prefix)
 
     return jsonify({
-        'url': url
+        'url': url,
+        'mimetype': resp.headers.get('Content-Type'),
     })
 
 
