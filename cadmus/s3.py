@@ -11,7 +11,7 @@ from __future__ import unicode_literals
 import uuid
 from os import path
 from urlparse import urljoin
-from functools import partial
+
 import boto3
 
 from .config import AppConfig

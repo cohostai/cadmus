@@ -9,6 +9,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from os import path
+from io import BytesIO
 
 from flask import Flask
 from flask import jsonify
@@ -17,11 +18,15 @@ from jose import JWTError
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
+import requests
+
 from . import response
 from . import s3
 from .auth import Auth
 from .auth import NotFoundError
 from .config import AppConfig
+from .utils import urls
+
 
 ALLOWED_EXTENSIONS = [
     ".jpg",
@@ -35,6 +40,7 @@ ALLOWED_EXTENSIONS = [
     ".pdf",
     ".doc"
 ]
+
 
 auth = Auth(
     issuer='https://%s/' % AppConfig.AUTH0_AUTH_DOMAIN,
@@ -52,6 +58,10 @@ app.config.from_object(AppConfig)
 def allowed_file(fileobj):
     name, extension = path.splitext(fileobj.filename)
     return extension and extension.lower() in ALLOWED_EXTENSIONS
+
+
+def allowed_content_type(content_type):
+    return content_type and content_type.lower().startswith("image")
 
 
 @app.errorhandler(413)
@@ -87,6 +97,31 @@ def upload_user_image():
 @auth.require_auth
 def upload_message_image():
     return _handle_upload("pictures/message")
+
+
+@app.route('/pictures/url', methods=['POST'])
+@auth.require_auth
+def upload_image_from_url():
+    body = request.get_json(force=True)
+    resp = requests.get(body['url'])
+
+    image_file = BytesIO(resp.content)
+    image_file.filename = urls.file_name(body['url'])
+    image_file.content_type = resp.headers.get('Content-Type')
+
+    if not allowed_content_type(image_file.content_type):
+        return response.invalid_file_type()
+
+    key_prefix = "pictures/url"
+    if request.args.get('type') == 'message':
+        key_prefix = "pictures/message"
+
+    url = s3.upload_fileobj(image_file, key_prefix=key_prefix)
+
+    return jsonify({
+        'url': url,
+        'mimetype': resp.headers.get('Content-Type'),
+    })
 
 
 @app.route('/pictures/team', methods=['POST'])
