@@ -20,4 +20,4 @@ COPY cadmus /app/cadmus/
 
 WORKDIR /app/
 
-ENTRYPOINT ["gunicorn", "cadmus", "-b", "0.0.0.0:7111", "-w", "3", "-k", "gevent", "--name", "cadmus", "--access-logfile", "-", "--error-logfile", "-"]
+ENTRYPOINT ["gunicorn", "cadmus", "-b", "0.0.0.0:7111", "-w", "3", "-k", "gevent", "--name", "cadmus", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-"]
