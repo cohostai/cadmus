@@ -38,14 +38,21 @@ ALLOWED_EXTENSIONS = [
     ".bmp",
     ".txt",
     ".pdf",
-    ".doc"
+    ".doc",
+]
+
+ONLY_IMAGE_EXTENSIONS = [
+    ".jpg",
+    ".jpe",
+    ".jpeg",
+    ".png",
 ]
 
 
 auth = Auth(
-    issuer='https://%s/' % AppConfig.AUTH0_AUTH_DOMAIN,
+    issuer="https://%s/" % AppConfig.AUTH0_AUTH_DOMAIN,
     api_audience=AppConfig.COHOST_API_AUDIENCE,
-    jwks_url=AppConfig.COHOST_JWKS_URL
+    jwks_url=AppConfig.COHOST_JWKS_URL,
 )
 
 app = Flask(__name__)
@@ -62,6 +69,11 @@ def allowed_file(fileobj):
 
 def allowed_content_type(content_type):
     return content_type and content_type.lower().startswith("image")
+
+
+def allowed_images(fileobj):
+    name, extension = path.splitext(fileobj.filename)
+    return extension and extension.lower() in ONLY_IMAGE_EXTENSIONS
 
 
 @app.errorhandler(413)
@@ -81,65 +93,82 @@ def not_found_user(e):
 
 # TODO: make streaming upload
 # TODO: validate client id
-@app.route('/upload/user', methods=['POST'])
+@app.route("/upload/user", methods=["POST"])
 # @auth.require_auth
 def upload_old_user_image():
     return upload_user_image()
 
 
-@app.route('/pictures/user', methods=['POST'])
+@app.route("/pictures/user", methods=["POST"])
 # @auth.require_auth
 def upload_user_image():
     return _handle_upload("pictures/user")
 
 
-@app.route('/pictures/message', methods=['POST'])
+@app.route("/pictures/message", methods=["POST"])
 @auth.require_auth
 def upload_message_image():
     return _handle_upload("pictures/message")
 
 
-@app.route('/pictures/url', methods=['POST'])
+@app.route("/pictures/url", methods=["POST"])
 @auth.require_auth
 def upload_image_from_url():
     body = request.get_json(force=True)
-    resp = requests.get(body['url'])
+    resp = requests.get(body["url"])
 
     image_file = BytesIO(resp.content)
-    image_file.filename = urls.file_name(body['url'])
-    image_file.content_type = resp.headers.get('Content-Type')
+    image_file.filename = urls.file_name(body["url"])
+    image_file.content_type = resp.headers.get("Content-Type")
 
     if not allowed_content_type(image_file.content_type):
         return response.invalid_file_type()
 
     key_prefix = "pictures/url"
-    if request.args.get('type') == 'message':
+    if request.args.get("type") == "message":
         key_prefix = "pictures/message"
 
     url = s3.upload_fileobj(image_file, key_prefix=key_prefix)
 
-    return jsonify({
-        'url': url,
-        'mimetype': resp.headers.get('Content-Type'),
-    })
+    return jsonify(
+        {
+            "url": url,
+            "mimetype": resp.headers.get("Content-Type"),
+        }
+    )
 
 
-@app.route('/pictures/team', methods=['POST'])
+@app.route("/pictures/team", methods=["POST"])
 @auth.require_auth
 def upload_team_image():
     return _handle_upload("pictures/team")
 
 
-@app.route('/pictures/listing', methods=['POST'])
+@app.route("/pictures/listing", methods=["POST"])
 @auth.require_auth
 def upload_listing_image():
     return _handle_upload("pictures/listing")
 
 
-@app.route('/pictures/attachments', methods=['POST'])
+@app.route("/pictures/attachments", methods=["POST"])
 @auth.require_auth
 def upload_attachments():
     return _handle_upload("pictures/attachments")
+
+
+@app.route("/listing/images", methods=["POST"])
+@auth.require_auth
+def upload_listing_images():
+    uploaded_files = request.files.getlist("file[]")
+    urls = []
+    for file_obj in uploaded_files:
+        if file_obj and allowed_images(file_obj.filename):
+            # Make the filename safe, remove unsupported chars
+            file_obj.filename = secure_filename(file_obj.filename)
+            url = s3.upload_fileobj(file_obj, key_prefix="pictures/listing")
+            urls.append(url)
+
+    return jsonify({"urls": urls})
 
 
 def _handle_upload(key_prefix):
@@ -157,18 +186,13 @@ def _handle_upload(key_prefix):
     fileobj.filename = secure_filename(fileobj.filename)
     url = s3.upload_fileobj(fileobj, key_prefix=key_prefix)
 
-    return jsonify({
-        "url": url,
-        "mimetype": fileobj.content_type
-    })
+    return jsonify({"url": url, "mimetype": fileobj.content_type})
 
 
-@app.route('/upload/health_check', methods=['GET'])
+@app.route("/upload/health_check", methods=["GET"])
 def health_check():
-    return jsonify({
-        "message": "I am still ok"
-    })
+    return jsonify({"message": "I am still ok"})
 
 
-if __name__ == '__main__':
-    app.run('0.0.0.0', 8008, debug=True)
+if __name__ == "__main__":
+    app.run("0.0.0.0", 8008, debug=True)
