@@ -100,7 +100,6 @@ def upload_message_image():
 
 
 @app.route('/pictures/url', methods=['POST'])
-@auth.require_auth
 def upload_image_from_url():
     body = request.get_json(force=True)
     resp = requests.get(body['url'])
