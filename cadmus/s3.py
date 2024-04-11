@@ -10,7 +10,7 @@ from __future__ import unicode_literals
 
 import uuid
 from os import path
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 import boto3
 

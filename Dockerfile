@@ -1,20 +1,16 @@
-FROM python:2.7.15-alpine3.7
+FROM python:3.11-alpine
 LABEL author=thuync@chongiadung.com
-
-COPY requirements_x.txt /tmp/
 
 RUN apk --no-cache add --virtual build-dependencies \
     build-base \
     gcc \
     g++ \
-    && pip install -r /tmp/requirements_x.txt \
-    && rm -rf ~/.cache/pip \
     && apk del build-dependencies
 
-COPY requirements.txt /tmp/
-
-RUN pip install -r /tmp/requirements.txt \
-    && rm -rf ~/.cache/pip
+COPY Pipfile Pipfile.lock /app/cadmus/
+RUN pip3 install --upgrade pip
+RUN pip3 install pipenv
+RUN pipenv install && rm -rf ~/.cache/pip
 
 COPY cadmus /app/cadmus/
 
