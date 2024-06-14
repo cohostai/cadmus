@@ -2,7 +2,7 @@ name: Build and Deploy Docker Image
 
 on:
   push:
-    branches: [caprover, caprover-dev]
+    branches: [develop, caprover-dev]
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
       - name: Deploy Image to CapRrover
         uses: caprover/deploy-from-github@v1.1.2
         with:
-          server: "${{ secrets.DEV_CAPROVER_SERVER }}"
-          app: "${{ secrets.DEV_APP_NAME }}"
-          token: "${{ secrets.DEV_APP_TOKEN }}"
+          server: "${{ secrets.STAGING_CAPROVER_SERVER }}"
+          app: "${{ secrets.STAGING_APP_NAME }}"
+          token: "${{ secrets.STAGING_APP_TOKEN }}"
           image: ${{ env.IMAGE_URL }}
