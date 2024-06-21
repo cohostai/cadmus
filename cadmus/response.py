@@ -43,19 +43,19 @@ def invalid_file_type():
 def invalid_token(e):
     return make_response({
         'error_code': 401,
-        'error_message': e.message
+        'error_message': str(e)
     }, 401)
 
 
 def user_not_found(e):
     return make_response({
         'error_code': 404,
-        'error_message': e.message
+        'error_message': str(e)
     }, 404)
 
 
 def internal_server_error(e):
     return make_response({
         'error_code': 500,
-        'error_message': e.message
+        'error_message': str(e)
     }, 500)

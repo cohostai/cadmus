@@ -15,12 +15,12 @@ params = params_store.get_params()
 
 
 class AppConfig(object):
-    SECRET_KEY = params['SECRET_KEY']
-    S3_BUCKET = params['S3_BUCKET']
-    MAX_CONTENT_LENGTH = to_int(params['MAX_CONTENT_LENGTH'])
-    BASE_URL = params['BASE_URL']
+    SECRET_KEY = params.get('SECRET_KEY')
+    S3_BUCKET = params.get('S3_BUCKET')
+    MAX_CONTENT_LENGTH = to_int(params.get('MAX_CONTENT_LENGTH'))
+    BASE_URL = params.get('BASE_URL')
 
     # Auth0 Authentication
-    AUTH0_AUTH_DOMAIN = params['AUTH0_AUTH_DOMAIN']
-    COHOST_API_AUDIENCE = params['COHOST_API_AUDIENCE']
-    COHOST_JWKS_URL = params['COHOST_JWKS_URL']
+    AUTH0_AUTH_DOMAIN = params.get('AUTH0_AUTH_DOMAIN')
+    COHOST_API_AUDIENCE = params.get('COHOST_API_AUDIENCE')
+    COHOST_JWKS_URL = params.get('COHOST_JWKS_URL')

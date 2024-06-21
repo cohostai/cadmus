@@ -1,23 +1,23 @@
-FROM python:2.7.15-alpine3.7
+FROM python:3.11-alpine
 LABEL author=thuync@chongiadung.com
-
-COPY requirements_x.txt /tmp/
-
-RUN apk --no-cache add --virtual build-dependencies \
-    build-base \
-    gcc \
-    g++ \
-    && pip install -r /tmp/requirements_x.txt \
-    && rm -rf ~/.cache/pip \
-    && apk del build-dependencies
-
-COPY requirements.txt /tmp/
-
-RUN pip install -r /tmp/requirements.txt \
-    && rm -rf ~/.cache/pip
-
-COPY cadmus /app/cadmus/
 
 WORKDIR /app/
 
-ENTRYPOINT ["gunicorn", "cadmus", "-b", "0.0.0.0:7111", "-w", "3", "-k", "gevent", "--name", "cadmus", "--access-logfile", "-", "--error-logfile", "-"]
+RUN apk update && apk --no-cache add \
+    build-base \
+    gcc \
+    g++ \
+    libc-dev \
+    libffi-dev \
+    mariadb-dev \
+    libxslt-dev \
+    linux-headers
+
+COPY Pipfile Pipfile.lock ./
+RUN pip3 install --upgrade pip
+RUN pip3 install pipenv
+RUN pipenv install --system --deploy
+
+COPY cadmus /app/cadmus/
+
+ENTRYPOINT ["gunicorn", "cadmus", "-b", "0.0.0.0:7111", "-w", "3", "-k", "gevent", "--name", "cadmus", "--timeout", "120"]

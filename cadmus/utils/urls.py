@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from six.moves.urllib.parse import urlparse
+from urllib.parse import urlparse
 
 
 def file_name(url):

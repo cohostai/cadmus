@@ -9,7 +9,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from os import path
-from io import BytesIO
 
 from flask import Flask
 from flask import jsonify
@@ -184,9 +183,14 @@ def _handle_upload(key_prefix):
         return response.invalid_file_type()
 
     fileobj.filename = secure_filename(fileobj.filename)
-    url = s3.upload_fileobj(fileobj, key_prefix=key_prefix)
+    url, width, height = s3.upload_fileobj(fileobj, key_prefix=key_prefix)
 
-    return jsonify({"url": url, "mimetype": fileobj.content_type})
+    return jsonify({
+        "url": url,
+        "mimetype": fileobj.content_type,
+        "width": width,
+        "height": height
+    })
 
 
 @app.route("/upload/health_check", methods=["GET"])
